@@ -13,6 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class MemoController {
+    //DB
     private final Map<Long, Memo> memolist = new HashMap<>();
 
     @PostMapping("/memos")
@@ -44,5 +45,32 @@ public class MemoController {
                 .toList();
 
         return responseDtoList;
+    }
+
+    @PutMapping("/memos/{id}")
+    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
+        // 해당 메모가 DB에 존재하는지 확인이 우선
+        if(memolist.containsKey(id)) {
+            Memo memo = memolist.get(id);
+
+            // memo 수정
+            memo.update(requestDto);
+
+            return memo.getId();
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
+
+    @DeleteMapping("/memos/{id}")
+    public Long deleteMemo(@PathVariable Long id) {
+        if(memolist.containsKey(id)) {
+            // id에 해당하는 Memo 삭제
+            memolist.remove(id);
+
+            return id;
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
     }
 }
