@@ -9,11 +9,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 
 public class MemoService {
-
+    //MemoService -> MemoRepository
     private final MemoRepository memoRepository;
 
-    public MemoService(JdbcTemplate jdbcTemplate) {
-        this.memoRepository = new MemoRepository(jdbcTemplate);
+    public MemoService(MemoRepository memoRepository) {
+        this.memoRepository = memoRepository;
     }
 
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {
