@@ -3,12 +3,15 @@ package com.sparta.springmemo.repository;
 import com.sparta.springmemo.dto.MemoRequestDto;
 import com.sparta.springmemo.dto.MemoResponseDto;
 import com.sparta.springmemo.entity.Memo;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,6 +64,18 @@ public class MemoRepository {
         });
     }
 
+    public void update(Long id, MemoRequestDto requestDto) {
+        // memo 내용 수정
+        String sql = "UPDATE memo SET username = ?, contents = ? WHERE id = ?";
+        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getContents(), id);
+    }
+
+    public void delete(Long id) {
+        // memo 삭제
+        String sql = "DELETE FROM memo WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public Memo findById(Long id) {
         // DB 조회
         String sql = "SELECT * FROM memo WHERE id = ?";
@@ -77,15 +92,13 @@ public class MemoRepository {
         }, id);
     }
 
-    public void update(Long id, MemoRequestDto requestDto) {
-        // memo 내용 수정
-        String sql = "UPDATE memo SET username = ?, contents = ? WHERE id = ?";
-        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getContents(), id);
-    }
+    @Transactional  // (propagation = Propagation.REQUIRED) = default
+    public Memo createMemo(EntityManager em) {
+        Memo memo = em.find(Memo.class, 1);
+        memo.setUsername("JCM");
+        memo.setContents("@Transactional 전파 테스트 중!");
 
-    public void delete(Long id) {
-        // memo 삭제
-        String sql = "DELETE FROM memo WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+        System.out.println("createMemo 메서드 종료");
+        return memo;
     }
 }
