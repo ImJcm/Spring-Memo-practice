@@ -4,6 +4,7 @@ import com.sparta.springmemo.dto.MemoRequestDto;
 import com.sparta.springmemo.dto.MemoResponseDto;
 import com.sparta.springmemo.entity.Memo;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,8 +20,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-@Repository
+public interface MemoRepository extends JpaRepository<Memo,Long> {
+
+}
+
+
+//jdbcTemplate
+/*@Repository
 public class MemoRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
     public MemoRepository(JdbcTemplate jdbcTemplate) {
@@ -101,4 +109,4 @@ public class MemoRepository {
         System.out.println("createMemo 메서드 종료");
         return memo;
     }
-}
+}*/
